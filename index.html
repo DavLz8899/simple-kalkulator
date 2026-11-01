@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculator Night Sky</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at top, rgba(20, 60, 90, 0.8), transparent 35%),
+        linear-gradient(180deg, #040b1a 0%, #071524 35%, #020912 100%);
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Bintang jatuh */
+    .stars {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(255,255,255,0.8);
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-10vh) translateX(0) scale(0.7);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh) translateX(-40px) scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    .calculator {
+      position: relative;
+      z-index: 2;
+      width: 340px;
+      padding: 24px 20px 18px;
+      border-radius: 24px;
+      background: rgba(10, 17, 26, 0.82);
+      border: 1px solid rgba(110, 255, 180, 0.25);
+      box-shadow:
+        0 0 20px rgba(43, 255, 146, 0.15),
+        0 0 40px rgba(20, 90, 70, 0.35),
+        inset 0 0 20px rgba(129, 255, 203, 0.08);
+      backdrop-filter: blur(8px);
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      color: #dfffe9;
+      text-align: center;
+      font-size: 20px;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba(107, 255, 182, 0.6);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    input, select, button {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(129, 255, 203, 0.2);
+      padding: 12px 14px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input, select {
+      background: rgba(11, 22, 32, 0.9);
+      color: #e7fff2;
+    }
+
+    input::placeholder {
+      color: rgba(190, 230, 210, 0.6);
+    }
+
+    button {
+      margin-top: 8px;
+      background: linear-gradient(180deg, #1b8f61 0%, #0d5d44 100%);
+      color: #ebfff3;
+      border: 1px solid rgba(136, 255, 200, 0.4);
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow:
+        0 0 10px rgba(56, 255, 170, 0.35),
+        0 0 18px rgba(25, 126, 83, 0.5);
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 0 16px rgba(56, 255, 170, 0.55),
+        0 0 24px rgba(39, 170, 109, 0.7);
+    }
+
+    #hasil {
+      margin-top: 18px;
+      min-height: 60px;
+      padding: 12px 10px;
+      border-radius: 12px;
+      background: rgba(14, 30, 24, 0.7);
+      border: 1px solid rgba(112, 255, 200, 0.2);
+      color: #dfffe9;
+      font-weight: bold;
+      line-height: 1.5;
+      white-space: pre-line;
+      text-shadow: 0 0 8px rgba(111, 247, 184, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+
+  <div class="calculator">
+    <h2>---simple kalkulator_Beta---</h2>
+
+    <div class="input-group">
+      <input type="number" id="angka1" placeholder="Masukan angka pertama">
+      <select id="option">
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+      </select>
+      <input type="number" id="angka2" placeholder="Masukan angka kedua">
+      <button onclick="hitung()">Hitung</button>
+    </div>
+
+    <div id="hasil">Hasil akan muncul di sini.</div>
+  </div>
+
+  <script>
+    function createStars() {
+      const starsContainer = document.getElementById("stars");
+      const total = 30;
+
+      for (let i = 0; i < total; i++) {
+        const star = document.createElement("span");
+        star.className = "star";
+
+        star.style.left = Math.random() * 100 + "%";
+        star.style.top = (Math.random() * 50 - 10) + "%";
+        star.style.animationDelay = (Math.random() * 5) + "s";
+        star.style.animationDuration = (Math.random() * 3 + 3) + "s";
+        star.style.opacity = Math.random() * 0.8 + 0.2;
+
+        starsContainer.appendChild(star);
+      }
+    }
+
+    function hitung() {
+      const angka1 = Number(document.getElementById("angka1").value);
+      const angka2 = Number(document.getElementById("angka2").value);
+      const option = document.getElementById("option").value;
+
+      let hasil;
+
+      if (option === "+") {
+        hasil = angka1 + angka2;
+      } else if (option === "-") {
+        hasil = angka1 - angka2;
+      } else if (option === "*") {
+        hasil = angka1 * angka2;
+      } else if (option === "/") {
+        hasil = angka1 / angka2;
+      } else {
+        hasil = 0;
+      }
+
+      const output = document.getElementById("hasil");
+
+      if (option === "/") {
+        output.textContent = "Hasilnya adalah : " + hasil + "\n" +
+          "dan jika dibulatkan, menjadi " + Math.round(hasil);
+      } else {
+        output.textContent = "Hasilnya adalah : " + hasil;
+      }
+    }
+
+    createStars();
+  </script>
+</body>
+</html>
